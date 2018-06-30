@@ -1,10 +1,14 @@
 package org.homenet.raneri;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
 import org.homenet.raneri.extension.ExtensionFilter;
 import org.homenet.raneri.extension.JPEGExtensionFilter;
 import org.homenet.raneri.extension.RAWExtensionFilter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -15,7 +19,6 @@ public class Main {
         Scanner input = new Scanner(System.in);
 
         //Prompt user for paths to get/save pictures from/to
-
         System.out.print("Enter path for JPEG images (D:\\pictures\\jpeg): ");
         String jpeginitialdir = input.nextLine();
 
@@ -77,7 +80,48 @@ public class Main {
             System.out.print("There are " + extraJPEGs + " extra JPEGs and " + extraRAWs + " extra RAWs. Are you sure you wish to continue? [Y/n] ");
         }
 
+        if (!input.nextLine().equals("Y")) return;
 
+
+        //Read EXIF data
+
+        System.out.println("Reading EXIF data...");
+
+        HashMap<String, Metadata> exifMap = getMetadata(jpegFiles);
+        System.out.println("Done reading EXIF data.                                   "); //Need to clear extra progress bar text
+        System.out.println("EXIF data not found for " + (jpegFiles.size() - exifMap.size()) + " files. These will not be copied.");
+
+
+
+    }
+
+    public static HashMap<String, Metadata> getMetadata(HashMap<String, File> files) {
+        HashMap<String, Metadata> exifMap = new HashMap<>();
+        double completed = 0;
+        double total = files.keySet().size();
+        for (String key : files.keySet()) {
+            try {
+                exifMap.put(key, ImageMetadataReader.readMetadata(files.get(key)));
+            } catch (IOException | ImageProcessingException e) {
+                System.out.println("Could not fetch metadata for JPEG file. Will not copy.");
+            } finally {
+                completed++;
+                printProgressBar(completed / total);
+            }
+        }
+        return exifMap;
+    }
+
+    public static void printProgressBar(double percent) {
+        int length = 48; //50, with 2 end characters
+
+        System.out.print("[");
+
+        for (int i = 0; i < length; i++) {
+            System.out.print(percent*length < i ? " " : "=");
+        }
+
+        System.out.print("] " + Math.round(percent * 1000)/10d + "%\r"); //10th's place
     }
 
     /**
