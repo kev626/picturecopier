@@ -22,12 +22,6 @@ public class Main {
         System.out.print("Enter path for RAW images (D:\\pictures\\raw): ");
         String rawinitialdir = input.nextLine();
 
-        System.out.print("Enter destination for JPEG images (D:\\renamed\\jpeg): ");
-        String jpegdestdir = input.nextLine();
-
-        System.out.print("Enter destination for RAW images (D:\\renamed\\raw): ");
-        String rawdestdir = input.nextLine();
-
         //Scan pictures in directories
 
         HashMap<String, File> jpegFiles; //<filename.jpeg, File>
