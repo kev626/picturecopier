@@ -62,7 +62,7 @@ public class Main {
 
             if (!matchFound) {
                 jpegAllHaveMatches = false;
-                System.out.println("JPEG FILE " + jpeg + " does not have a corresponding RAW file!");
+                System.out.println("JPEG file " + jpeg + " does not have a corresponding RAW file!");
             }
         }
 
@@ -75,7 +75,7 @@ public class Main {
 
             if (!matchFound) {
                 rawAllHaveMatches = false;
-                System.out.println("RAW FILE " + raw + " does not have a corresponding JPEG file!");
+                System.out.println("RAW file " + raw + " does not have a corresponding JPEG file!");
             }
         }
 
@@ -86,6 +86,11 @@ public class Main {
         }
     }
 
+    /**
+     * Removes the file extension from a filename
+     * @param filename The filename to remove the extension from
+     * @return The filename without an extension
+     */
     public static String removeFileExtension(String filename) {
         return filename.substring(0, filename.lastIndexOf('.'));
     }
