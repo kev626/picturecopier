@@ -30,7 +30,6 @@ public class Main {
 
         //Scan pictures in directories
 
-        System.out.println("Scanning JPEG images...");
         HashMap<String, File> jpegFiles; //<filename.jpeg, File>
         jpegFiles = getFilesByExtensionType(jpeginitialdir, new JPEGExtensionFilter());
         if (jpegFiles.size() > 0) {
@@ -40,7 +39,6 @@ public class Main {
             System.exit(0);
         }
 
-        System.out.println("Scanning RAW images...");
         HashMap<String, File> rawFiles; //<filename.jpeg, File>
         rawFiles = getFilesByExtensionType(rawinitialdir, new RAWExtensionFilter());
         if (rawFiles.size() > 0) {
@@ -53,7 +51,7 @@ public class Main {
         //Find pictures which have matches
 
         System.out.println("Checking to make sure all pictures have matches...");
-        boolean jpegAllHaveMatches = true;
+        int extraJPEGs = 0;
         for (String jpeg : jpegFiles.keySet()) {
             boolean matchFound = false;
             for (String raw : rawFiles.keySet()) {
@@ -61,12 +59,12 @@ public class Main {
             }
 
             if (!matchFound) {
-                jpegAllHaveMatches = false;
-                System.out.println("JPEG file " + jpeg + " does not have a corresponding RAW file!");
+                extraJPEGs++;
+                //System.out.println("JPEG file " + jpeg + " does not have a corresponding RAW file!");
             }
         }
 
-        boolean rawAllHaveMatches = true;
+        int extraRAWs = 0;
         for (String raw : rawFiles.keySet()) {
             boolean matchFound = false;
             for (String jpeg : jpegFiles.keySet()) {
@@ -74,16 +72,18 @@ public class Main {
             }
 
             if (!matchFound) {
-                rawAllHaveMatches = false;
-                System.out.println("RAW file " + raw + " does not have a corresponding JPEG file!");
+                extraRAWs++;
+                //System.out.println("RAW file " + raw + " does not have a corresponding JPEG file!");
             }
         }
 
-        if (jpegAllHaveMatches && rawAllHaveMatches) {
+        if (extraJPEGs == 0 && extraRAWs == 0) {
             System.out.print("All files are in perfect JPEG/RAW pairs. Do you wish to continue? [Y/n] ");
         } else {
-            System.out.print("Some files do not have matches. Are you sure you wish to continue? [Y/n] ");
+            System.out.print("There are " + extraJPEGs + " extra JPEGs and " + extraRAWs + " extra RAWs. Are you sure you wish to continue? [Y/n] ");
         }
+
+
     }
 
     /**
